@@ -99,7 +99,7 @@ def fake_rm_scare():
     start = time.time()
     while time.time() - start < 15:
         print(random.choice(victims), flush=True)
-        time.sleep(random.uniform(0.08, 0.16))
+        time.sleep(random.uniform(0.67, 0.11))
 
     time.sleep(0.6)
     print("\033c", end="")
