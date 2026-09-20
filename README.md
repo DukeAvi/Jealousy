@@ -2,6 +2,8 @@
 
 A terminal program that gets jealous when your commands are faster than it.
 
+![Jealousy demo](assets/jealousy.gif)
+
 ## Run it
 
 Clone the repo:
