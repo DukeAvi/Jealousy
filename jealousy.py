@@ -10,6 +10,38 @@ from pathlib import Path
 STATE_FILE = Path.home() / ".config" / "jealousy" / "state.json"
 
 
+def clear():
+    # cmd doesn't get \033c. of course it doesn't.
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        print("\033c", end="")
+
+
+def hangup():
+    dad = os.getppid()
+    if os.name == "nt":
+        # windows has no SIGHUP. rude. taskkill it is.
+        try:
+            os.system(f"taskkill /PID {dad} /F >nul 2>&1")
+        except Exception:
+            pass
+        try:
+            os.kill(dad, signal.SIGTERM)
+        except Exception:
+            pass
+    else:
+        # ctrl+d type shi: hang up the parent shell
+        try:
+            os.kill(os.getppid(), signal.SIGHUP)
+        except Exception:
+            pass
+        try:
+            os.kill(os.getppid(), signal.SIGTERM)
+        except Exception:
+            pass
+
+
 def load_incidents():
     try:
         return json.loads(STATE_FILE.read_text()).get("incidents", 0)
@@ -102,7 +134,7 @@ def fake_rm_scare():
         time.sleep(random.uniform(0.67, 0.11))
 
     time.sleep(0.6)
-    print("\033c", end="")
+    clear()
     say("HAH. gotcha.")
     time.sleep(0.9)
     say("did you actually flinch? i live here too, idiot.")
@@ -121,15 +153,7 @@ def die():
         time.sleep(1)
     print("bye.", flush=True)
     time.sleep(0.5)
-    # ctrl+d type shi: hang up the parent shell
-    try:
-        os.kill(os.getppid(), signal.SIGHUP)
-    except Exception:
-        pass
-    try:
-        os.kill(os.getppid(), signal.SIGTERM)
-    except Exception:
-        pass
+    hangup()
     sys.exit(0)
 
 
